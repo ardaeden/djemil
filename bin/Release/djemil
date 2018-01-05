@@ -1,2 +1,4 @@
 EXPORTS
     djemil_new @1
+    djemil_set @2
+    djemil_setup @3
