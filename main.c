@@ -1,32 +1,63 @@
 #include "m_pd.h"
 #include <math.h>
 
+static t_float scales[2][12] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9742}, //Rast
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
 
 static t_class *djemil_class;
 
 typedef struct _djemil {
     t_object    x_obj;
-
+    t_outlet    *f_out;
+    t_float     freq, scl;
+    t_int       fret;
 }t_djemil;
 
 
 void djemil_set(t_djemil *x, t_floatarg f) {
 
-post("Set message received with %d", f);
+    switch((t_int) f) {
+        case 1:
+            post("1st case triggered");
+            x->scl = 0;
+            break;
+        case 2:
+            post("2nd case triggrered");
+            x->scl = 1;
+            break;
+    }
+
 }
 
+void djemil_process(t_djemil *x, t_float f){
+            x->fret = (t_int) f % 12;
+            x->freq = mtof(f)*scales[(t_int)x->scl][(t_int)x->fret];
+            post("Note = %d", x->fret);
+            outlet_float(x->x_obj.ob_outlet, x->freq);
+}
+
+
+
 void *djemil_new(void){
+
     t_djemil *x = (t_djemil *)pd_new(djemil_class);
-    //outlet_new(x, &s_float);
+
+    x->f_out = outlet_new(&x->x_obj, &s_float);
     return (void *)x;
 }
 
 
 void djemil_setup(void) {
+
     djemil_class = class_new(gensym("djemil"),
     (t_newmethod)djemil_new,
     0, sizeof(t_djemil),
     CLASS_DEFAULT, 0);
+
+    class_addfloat(djemil_class, (t_method) djemil_process);
+
     class_addmethod(djemil_class,
                     (t_method)djemil_set,
                     gensym("set"), A_DEFFLOAT, 0);
