@@ -15,31 +15,22 @@ typedef struct _djemil {
     t_int       fret;
 }t_djemil;
 
-//
-//void djemil_setMaqam(t_djemil *x, t_floatarg f) {
-//
-//    switch((t_int) f) {
-//        case 1:
-//            post("1st case triggered");
-//            x->scl = 0;
-//            break;
-//        case 2:
-//            post("2nd case triggrered");
-//            x->scl = 1;
-//            break;
-//    }
-//
-//}
 
 void djemil_setMaqam(t_djemil *x, t_symbol *s, t_int argc, t_atom *argv) {
+
     if (argv[0].a_type != A_SYMBOL) return;
-    //post("String = %s", atom_getsymbol(argv)->s_name);
+
+    if (atom_getsymbol(argv) == gensym("Rast") || atom_getsymbol(argv) == gensym("rast")) {
+        post("Set to maqam Rast");
+        x->sclNo = 0;
+    }
 }
 
-void djemil_process(t_djemil *x, t_float f){
+void djemil_process(t_djemil *x, t_float f) {
+
             x->fret = (t_int) f % 12;
             x->freq = mtof(f)*scales[(t_int)x->sclNo][(t_int)x->fret];
-            post("Note = %d", x->fret);
+            //post("Note = %d", x->fret);
             outlet_float(x->x_obj.ob_outlet, x->freq);
 }
 
@@ -48,7 +39,6 @@ void djemil_process(t_djemil *x, t_float f){
 void *djemil_new(void){
 
     t_djemil *x = (t_djemil *)pd_new(djemil_class);
-
     x->f_out = outlet_new(&x->x_obj, &s_float);
     return (void *)x;
 }
@@ -57,16 +47,12 @@ void *djemil_new(void){
 void djemil_setup(void) {
 
     djemil_class = class_new(gensym("djemil"),
-    (t_newmethod)djemil_new,
-    0, sizeof(t_djemil),
-    CLASS_DEFAULT, 0);
+                    (t_newmethod)djemil_new,
+                     0, sizeof(t_djemil),
+                     CLASS_DEFAULT, 0);
 
     class_addfloat(djemil_class, (t_method) djemil_process);
 
-//    class_addmethod(djemil_class,
-//                    (t_method) djemil_setMaqam,
-//                    gensym("set"), A_GIMME, 0);
-//    class_addlist(djemil_class, (t_method) djemil_setMaqam);
     class_addmethod(djemil_class, (t_method) djemil_setMaqam,
                     gensym("set"), A_GIMME, 0);
 }

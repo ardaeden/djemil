@@ -1,2 +1,6 @@
 EXPORTS
-    djemil_new @1
+    _nm__s_float @1 DATA
+    djemil_new @2
+    djemil_process @3
+    djemil_setMaqam @4
+    djemil_setup @5
