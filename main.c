@@ -2,8 +2,8 @@
 #include <math.h>
 
 static t_float scales[2][12] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9742}, //Rast
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9742},  //RAST
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1     }   //BUSELIK
 };
 
 static t_class *djemil_class;
@@ -13,7 +13,7 @@ typedef struct _djemil {
     t_outlet    *f_out;
     t_float     freq, sclNo;
     t_int       fret;
-}t_djemil;
+} t_djemil;
 
 
 void djemil_setMaqam(t_djemil *x, t_symbol *s, t_int argc, t_atom *argv) {
@@ -21,8 +21,13 @@ void djemil_setMaqam(t_djemil *x, t_symbol *s, t_int argc, t_atom *argv) {
     if (argv[0].a_type != A_SYMBOL) return;
 
     if (atom_getsymbol(argv) == gensym("Rast") || atom_getsymbol(argv) == gensym("rast")) {
-        post("Set to maqam Rast");
+        post("Set to maqam: Rast");
         x->sclNo = 0;
+    }
+
+    if (atom_getsymbol(argv) == gensym("Buselik") || atom_getsymbol(argv) == gensym("buselik")) {
+        post("Set to maqam: Buselik");
+        x->sclNo = 1;
     }
 }
 
@@ -30,7 +35,6 @@ void djemil_process(t_djemil *x, t_float f) {
 
             x->fret = (t_int) f % 12;
             x->freq = mtof(f)*scales[(t_int)x->sclNo][(t_int)x->fret];
-            //post("Note = %d", x->fret);
             outlet_float(x->x_obj.ob_outlet, x->freq);
 }
 
