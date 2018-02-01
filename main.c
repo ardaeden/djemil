@@ -1,9 +1,10 @@
 #include "m_pd.h"
 #include <math.h>
 
-static t_float scales[2][12] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9742},  //RAST
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1     }   //BUSELIK
+static t_float scales[3][12] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9892},  //RAST
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1     },   //BUSELIK
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.9763}   //USSAK
 };
 
 static t_class *djemil_class;
@@ -28,6 +29,11 @@ void djemil_setMaqam(t_djemil *x, t_symbol *s, t_int argc, t_atom *argv) {
     if (atom_getsymbol(argv) == gensym("Buselik") || atom_getsymbol(argv) == gensym("buselik")) {
         post("Set to maqam: Buselik");
         x->sclNo = 1;
+    }
+
+    if (atom_getsymbol(argv) == gensym("Ussak") || atom_getsymbol(argv) == gensym("ussak")) {
+        post("Set to maqam: Ussak");
+        x->sclNo = 2;
     }
 }
 
