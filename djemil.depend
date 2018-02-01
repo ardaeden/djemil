@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1517480195 source:c:\users\arda eden\documents\github\djemil\main.c
+	"m_pd.h"
+	<math.h>
+
+1517480195 c:\users\arda eden\documents\github\djemil\m_pd.h
+	<stddef.h>
+	<stdint.h>
+	<stdio.h>
+
